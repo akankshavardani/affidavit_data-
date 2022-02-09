@@ -2,6 +2,26 @@
 ## Author : Akanksha Vardani
 ## Start Date : 9 February 2022
 
+## Loading the libraries 
+library(data.table) 
+library(ggplot2) 
+library(fixest)
+library(xtable)
+library(Hmisc)
+library(rdd)
+library(lubridate)
+library(stringr)
+library(haven)
+library(statar)
+library(tidyverse)
+library(readxl)
+library(pblapply)
+library(gsubfn)
+library(mgsub)
+
 ## Setting the data upload and save paths
 inpath_shrug <- "~/Dropbox/Datasets/SHRUG/"
-outpath <- "/Users/akankshavardani/Desktop/Research/Projects/affidavit_data-/data_analysis/"
+outpath <- "~/Desktop/Research/Projects/affidavit_data-/data_analysis/"
+
+
+## Loading the affidavit data
