@@ -25,3 +25,4 @@ outpath <- "~/Desktop/Research/Projects/affidavit_data-/data_analysis/"
 
 
 ## Loading the affidavit data
+affidavit <- read.csv(paste0(inpath_shrug,"affidavits/shrug-v1.5.samosa-affidavits-csv/affidavits_clean.csv"))
