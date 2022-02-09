@@ -28,6 +28,9 @@ outpath <- "~/Desktop/Research/Projects/affidavit_data-/data_analysis/"
 affidavit <- read.csv(paste0(inpath_shrug,"affidavits/shrug-v1.5.samosa-affidavits-csv/affidavits_clean.csv"))
 
 ## What do I need to find in the data first -
-# How to know which candidate is for state and which for general elections - especially if both elections in the same year
-# How many candidates repeat over time - to get a sense on incumbency 
-# what all the variables mean 
+#1. How to know which candidate is for state and which for general elections - especially if both elections in the same year
+###### SO shrug only has assembly election data; will have to get from trivedi site for general elections
+#2. How many candidates repeat over time - to get a sense on incumbency 
+#3. what all the variables mean 
+
+#For 1. will need to link with the elections data 
