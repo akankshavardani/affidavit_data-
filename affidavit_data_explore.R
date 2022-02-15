@@ -32,7 +32,8 @@ candidates <- read.csv(paste0(inpath_shrug,"assembly_elections/shrug-v1.5.samosa
 elections <- read.csv(paste0(inpath_shrug,"assembly_elections/shrug-v1.5.samosa-assembly-csv/assembly_elections_clean.csv"))
 
 # Loading the PMGSY data
-roads <- read.csv(paste0(inpath_shrug,"pmgsy/shrug-v1.5.samosa-ancillary-csv/shrug_ancillary.csv"))
+roads <- read.csv(paste0(inpath_shrug,"pmgsy/shrug-v1.5.samosa-ancillary-csv/shrug_ancillary.csv")) ##the identifier in this data shr_id 
+#- NEED to link with Constituency Data Tanushree does this!
 
 ## What do I need to find in the data first -
 #1. How to know which candidate is for state and which for general elections - especially if both elections in the same year
