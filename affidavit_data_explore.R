@@ -38,7 +38,12 @@ roads <- read.csv(paste0(inpath_shrug,"pmgsy/shrug-v1.5.samosa-ancillary-csv/shr
 ## What do I need to find in the data first -
 #1. How to know which candidate is for state and which for general elections - especially if both elections in the same year
 ###### SO shrug only has assembly election data; will have to get from trivedi site for general elections (To DO!!!)
+
 #2. How many candidates repeat over time - to get a sense on incumbency 
 #3. what all the variables mean 
 
 #For 1 and 2. will need to link with the elections data 
+
+## Linking affidavit data and elections data 
+
+
