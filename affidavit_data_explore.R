@@ -7,7 +7,7 @@
 # Package names
 packages <- c("ggplot2", "readxl", "dplyr", "tidyr", "ggfortify", "DT", "reshape2", "knitr", "lubridate", "pwr","data.table","ggrepel","scales","fixest","xtable","Hmisc","haven",
               "RcmdrMisc","lmtest", "ggpubr", "dslabs", "stringr", "assist", "ggstatsplot", "forcats", "styler","magrittr", "tidyverse","statar","readxl","rdd",
-              "pbapply","gsubfn","mgsub")
+              "pbapply","gsubfn","mgsub","fedmatch")
 
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
@@ -16,7 +16,7 @@ if (any(installed_packages == FALSE)) {
 }
 
 # Packages loading
-lapply(packages, library, character.only = TRUE)
+invisible(lapply(packages, library, character.only = TRUE))
 
 
 ## Setting the data upload and save paths
@@ -71,8 +71,7 @@ aff_cand %>%
 
 # can't match over sex as the variable does not exist in the affidavit data - weird ! But the JPE 2014 Fisman et al paper has that information - so maybe can map for some
 
-
-
 ## how do the matches vary by years
-aff_cand %>% group_by(year)
+affid <- aff_cand %>% group_by(year.x) %>% count(aff_cand)
+cand <- aff_cand %>% group_by(year.y) %>% count(aff_cand)
 
