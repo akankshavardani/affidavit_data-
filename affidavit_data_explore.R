@@ -47,6 +47,8 @@ roads <- read.csv(paste0(inpath_shrug,"pmgsy/shrug-v1.5.samosa-ancillary-csv/shr
 #################################### Linking affidavit data and candidates data ####################################
 ## Linking the data using sh_cand_id
 
+## will drop the observations from the candidates datsaet for election years before 2004 - to get a better sense of the match between the two datasets
+candidates <- setDT(candidates)[year>=2004]
 aff_cand <- statar::join(affidavit,candidates,kind="full",on=c("sh_cand_id"), gen="aff_cand")
 
 aff_cand %>% count(aff_cand) ## only get 19,424 matches. 74,352 candidates from affidavit not matched - at least all these should be matches because even though 
@@ -68,6 +70,7 @@ aff_cand %>%
   count(age.x==age.y) ## Not a perfect match
 
 # can't match over sex as the variable does not exist in the affidavit data - weird ! But the JPE 2014 Fisman et al paper has that information - so maybe can map for some
+
 
 
 ## how do the matches vary by years
