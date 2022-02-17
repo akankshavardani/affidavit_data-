@@ -2,22 +2,22 @@
 ## Author : Akanksha Vardani
 ## Start Date : 9 February 2022
 
-## Loading the libraries 
-library(data.table) 
-library(ggplot2) 
-library(fixest)
-library(xtable)
-library(Hmisc)
-library(rdd)
-library(lubridate)
-library(stringr)
-library(haven)
-library(statar)
-library(tidyverse)
-library(readxl)
-library(pblapply)
-library(gsubfn)
-library(mgsub)
+#######Installing and loading Required Packages
+
+# Package names
+packages <- c("ggplot2", "readxl", "dplyr", "tidyr", "ggfortify", "DT", "reshape2", "knitr", "lubridate", "pwr","data.table","ggrepel","scales","fixest","xtable","Hmisc","haven",
+              "RcmdrMisc","lmtest", "ggpubr", "dslabs", "stringr", "assist", "ggstatsplot", "forcats", "styler","magrittr", "tidyverse","statar","readxl","rdd",
+              "pbapply","gsubfn","mgsub")
+
+# Install packages not yet installed
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+
+# Packages loading
+lapply(packages, library, character.only = TRUE)
+
 
 ## Setting the data upload and save paths
 inpath_shrug <- "~/Dropbox/Datasets/SHRUG/"
