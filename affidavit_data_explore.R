@@ -74,4 +74,20 @@ aff_cand %>%
 ## how do the matches vary by years
 affid <- aff_cand %>% group_by(year.x) %>% count(aff_cand)
 cand <- aff_cand %>% group_by(year.y) %>% count(aff_cand)
+rm(affid,cand)
 
+# creating a single variable for constituency name in the candidates data file
+
+candidates %>% count(ac07_name=="")
+# ac07_name == ""      n
+# 1:           FALSE  32662
+# 2:            TRUE 113679
+candidates %>% count(ac08_name=="")
+# ac08_name == ""      n
+# 1:           FALSE 113679
+# 2:            TRUE  32662
+
+candidates[ac07_name=="",con_name := ac08_name][ac08_name==""&is.na(con_name),con_name := ac07_name]
+
+## verifying
+candidates %>% count(is.na(con_name))
