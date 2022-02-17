@@ -91,10 +91,13 @@ candidates[ac07_name=="",con_name := ac08_name][ac08_name==""&is.na(con_name),co
 
 ## verifying
 candidates %>% count(is.na(con_name))
+candidates %>% count(is.na(tr_ac_name))
 
 ## is tr_ac_name same as con_name ?
 sum(candidates$tr_ac_name!=candidates$con_name) # No
-x <- candidates[which(candidates$tr_ac_name!=candidates$con_name)] ## similar - will use the tr_ac_name
+x <- candidates[which(candidates$tr_ac_name!=candidates$con_name)] ## similar - will use the tr_ac_name and so deleting con_name
+setDT(candidates)[,con_name:=NULL]
+rm(x)
 
 ## cleaning the state name, district name, constituency name and candidate names variables 
 ## keeping the same name for district name and constituency and candidate name variables 
@@ -119,19 +122,19 @@ rm(state_names_a,state_names_c)
 
 ## are the names of the districts same across the two files 
 
-dist_names_c <- setDT(candidates %>% distinct_at(c("tr_district_name")))
-dist_names_c<-dist_names_c[order(tr_district_name)]
+dist_names_c <- setDT(candidates %>% distinct_at(c("district_name")))
+dist_names_c<-dist_names_c[order(district_name)]
 
-dist_names_a <- setDT(affidavit %>% distinct_at(c("adr_district_name")))[order(adr_district_name)]
+dist_names_a <- setDT(affidavit %>% distinct_at(c("district_name")))[order(district_name)]
 
-dist_not_in_c <- data.table(dist_names_c$tr_district_name[which(!dist_names_c$tr_district_name%in%dist_names_a$adr_district_name)])
-dist_not_in_a <- data.table(dist_names_a$adr_district_name[which(!dist_names_a$adr_district_name%in%dist_names_c$tr_district_name)])
+dist_not_in_c <- data.table(dist_names_c$district_name[which(!dist_names_c$district_name%in%dist_names_a$district_name)])
+dist_not_in_a <- data.table(dist_names_a$district_name[which(!dist_names_a$district_name%in%dist_names_c$district_name)])
 rm(dist_names_a,dist_names_c,dist_not_in_a,dist_not_in_c)
 ## will have to fuzzy match on district names too :(
 
 ## fuzzy matching on district names - keeping year and state name exact
-districts_a <- unique(affidavit[,c("year","pc01_state_name","adr_district_name")])
-districts_c <- unique(candidates[,c("year","pc01_state_name","tr_district_name")])
+districts_a <- unique(affidavit[,c("year","pc01_state_name","district_name")])
+districts_c <- unique(candidates[,c("year","pc01_state_name","district_name")])
 
 district_fuzzy <- merge_plus(districts_a,districts_c,by=c())
 
