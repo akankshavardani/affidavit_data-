@@ -103,6 +103,13 @@ setnames(candidates,c("tr_district_name","tr_ac_name","cand_name"),c("district_n
 
 names <- c("pc01_state_name","district_name","con_name","cand_name")
 
+setDT(affidavit)[,(names):=lapply(.SD,function(x) iconv(x,"US-ASCII","UTF-8")), .SDcols=names] ## the encoding of the candidate name variable was such that tolower was giving an error. ON terminal
+## found the encoding tyoe and then converted that to UTF-8 and now the functiion works 
+
+affidavit[,(names):=lapply(.SD,tolower), .SDcols=names][,(names):=lapply(.SD,trimws), .SDcols=names]
+candidates[,(names):=lapply(.SD,tolower), .SDcols=names][,(names):=lapply(.SD,trimws), .SDcols=names]
+
+
 ## variables that we require exact match on - state name, district name, constituency name and year
 ## are the names of the state same across the two files ?
 state_names_c <- candidates %>% distinct_at(c("pc01_state_name"))
