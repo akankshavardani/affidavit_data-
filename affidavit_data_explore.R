@@ -52,3 +52,24 @@ aff_cand <- statar::join(affidavit,candidates,kind="full",on=c("sh_cand_id"), ge
 aff_cand %>% count(aff_cand) ## only get 19,424 matches. 74,352 candidates from affidavit not matched - at least all these should be matches because even though 
 ## not all candidates might be submitting an affidavit all those that do must be running for elections
 
+## do the year variables match for those that matched between the two datasets ?
+aff_cand %>% 
+  filter(aff_cand==3) %>% 
+  count(year.x==year.y) ## yes
+
+## do names match exactly ?
+aff_cand %>% 
+  filter(aff_cand==3) %>% 
+  count(adr_cand_name==cand_name) ## True for 16118 and false for 3306
+
+## how about age and sex ?
+aff_cand %>% 
+  filter(aff_cand==3) %>% 
+  count(age.x==age.y) ## Not a perfect match
+
+# can't match over sex as the variable does not exist in the affidavit data - weird ! But the JPE 2014 Fisman et al paper has that information - so maybe can map for some
+
+
+## how do the matches vary by years
+aff_cand %>% group_by(year)
+
