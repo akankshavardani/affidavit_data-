@@ -91,3 +91,28 @@ candidates[ac07_name=="",con_name := ac08_name][ac08_name==""&is.na(con_name),co
 
 ## verifying
 candidates %>% count(is.na(con_name))
+
+## is tr_ac_name same as con_name ?
+sum(candidates$tr_ac_name!=candidates$con_name) # No
+x <- candidates[which(candidates$tr_ac_name!=candidates$con_name)] ## similar - will use the tr_ac_name
+
+## cleaning the state name, district name, constituency name and candidate names variables 
+## variables that we require exact match on - state name, district name, constituency name and year
+## are the names of the state same across the two files ?
+state_names_c <- candidates %>% distinct_at(c("pc01_state_name"))
+state_names_a <- affidavit %>% distinct_at(c("pc01_state_name"))
+which(!state_names_c$pc01_state_name%in%state_names_a$pc01_state_name) ## same 
+rm(state_names_a,state_names_c)
+
+## are the names of the districts same across the two files 
+
+dist_names_c <- setDT(candidates %>% distinct_at(c("tr_district_name")))
+dist_names_c<-dist_names_c[order(tr_district_name)]
+
+dist_names_a <- setDT(affidavit %>% distinct_at(c("tr_district_name")))[order(adr_district_name)]
+
+dist_not_in_c <- data.table(dist_names_c$tr_district_name[which(!dist_names_c$tr_district_name%in%dist_names_a$adr_district_name)])
+dist_not_in_a <- data.table(dist_names_a$adr_district_name[which(!dist_names_a$adr_district_name%in%dist_names_c$tr_district_name)])
+
+## will have to fuzzy match on district names too :(
+## constituency 
