@@ -44,6 +44,11 @@ roads <- read.csv(paste0(inpath_shrug,"pmgsy/shrug-v1.5.samosa-ancillary-csv/shr
 
 #For 1 and 2. will need to link with the elections data 
 
-## Linking affidavit data and elections data 
+#################################### Linking affidavit data and candidates data ####################################
+## Linking the data using sh_cand_id
 
+aff_cand <- statar::join(affidavit,candidates,kind="full",on=c("sh_cand_id"), gen="aff_cand")
+
+aff_cand %>% count(aff_cand) ## only get 19,424 matches. 74,352 candidates from affidavit not matched - at least all these should be matches because even though 
+## not all candidates might be submitting an affidavit all those that do must be running for elections
 
