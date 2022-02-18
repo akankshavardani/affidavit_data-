@@ -137,14 +137,15 @@ districts_a <- unique(affidavit[,c("pc01_state_name","district_name")])
 districts_c <- unique(candidates[,c("pc01_state_name","district_name")])
 
 ## creating a single variable that is of the form year-state-district_name
-districts_a[,dist_ident:=paste0(district_name,"-", pc01_state_name)]
+districts_a[,dist_ident:=paste0(district_name,"-",pc01_state_name)]
 districts_c[,dist_ident:=paste0(district_name,"-",pc01_state_name)]
 
 districts_a$id_a <- as.numeric(rownames(districts_a))
 districts_c$id_c <- as.numeric(rownames(districts_c))
 
 district_fuzzy <- merge_plus(districts_a,districts_c,by="dist_ident",
-                             fuzzy_settings=build_fuzzy_settings(method = "lsc",maxDist = 0.8,matchNA = FALSE),
+                             match_type = "fuzzy",
+                             fuzzy_settings=build_fuzzy_settings(method = "jw",maxDist = 0.5,matchNA = FALSE),
                              unique_key_1 = "id_a",
                              unique_key_2 = "id_c")
 
