@@ -107,7 +107,7 @@ setnames(candidates,c("tr_district_name","tr_ac_name","cand_name"),c("district_n
 names <- c("pc01_state_name","district_name","con_name","cand_name")
 
 setDT(affidavit)[,(names):=lapply(.SD,function(x) iconv(x,"US-ASCII","UTF-8")), .SDcols=names] ## the encoding of the candidate name variable was such that tolower was giving an error. ON terminal
-## found the encoding tyoe and then converted that to UTF-8 and now the functiion works 
+## found the encoding type and then converted that to UTF-8 and now the functiion works 
 
 affidavit[,(names):=lapply(.SD,tolower), .SDcols=names][,(names):=lapply(.SD,trimws), .SDcols=names]
 candidates[,(names):=lapply(.SD,tolower), .SDcols=names][,(names):=lapply(.SD,trimws), .SDcols=names]
@@ -132,25 +132,37 @@ dist_not_in_a <- data.table(dist_names_a$district_name[which(!dist_names_a$distr
 rm(dist_names_a,dist_names_c,dist_not_in_a,dist_not_in_c)
 ## will have to fuzzy match on district names too :(
 
-## fuzzy matching on district names - keeping year and state name exact
-districts_a <- unique(affidavit[,c("pc01_state_name","district_name")])
-districts_c <- unique(candidates[,c("pc01_state_name","district_name")])
+# ## fuzzy matching on district names - keeping year and state name exact
+# districts_a <- unique(affidavit[,c("pc01_state_name","district_name")])
+# districts_c <- unique(candidates[,c("pc01_state_name","district_name")])
+# 
+# ## creating a single variable that is of the form year-state-district_name
+# districts_a[,dist_ident:=paste0(district_name,"-",pc01_state_name)]
+# districts_c[,dist_ident:=paste0(district_name,"-",pc01_state_name)]
+# 
+# districts_a$id_a <- as.numeric(rownames(districts_a))
+# districts_c$id_c <- as.numeric(rownames(districts_c))
+# 
+# district_fuzzy <- merge_plus(districts_a,districts_c,by="dist_ident",
+#                              match_type = "fuzzy",
+#                              fuzzy_settings=build_fuzzy_settings(method = "jw",maxDist = 0.5,matchNA = FALSE),
+#                              unique_key_1 = "id_a",
+#                              unique_key_2 = "id_c")
+# 
+#                              
+# dist_matches <- district_fuzzy$matches[order(pc01_state_name_1)]
+# nomatch_a <- district_fuzzy$data1_nomatch[order(pc01_state_name)]
+# nomatch_c <- district_fuzzy$data2_nomatch[order(pc01_state_name)]
 
-## creating a single variable that is of the form year-state-district_name
-districts_a[,dist_ident:=paste0(district_name,"-",pc01_state_name)]
-districts_c[,dist_ident:=paste0(district_name,"-",pc01_state_name)]
+## not an ideal fuzzy match - getting districts matched across different states - will do fuzzy matching in STATA instead.
+## Steps to undertake
+# 1. create two key datasets - one for affidavits data and the other for the candidates data. In each of these files will have observations that are unique by - state-district-constituency-candidate 
+# generate an id for each variable - will label of form state_name and state_id,  district_name_a, distict_name_c, ...
+# 2. Will export the two datasets to csv, load it in STATA. 
+# Will first fuzzy match over district names - for each dataset, only keep the unique district and state observations - to fuzzy match using affidavit data as the first dataset 
+# (as that is the one with a higher number of observations) - after the fuzzy match - link the above file with the candidate file - and now will use the district_name_a and 
+# so relabel district_name_a as district_name ...
+## will next fuzzy match over constituencies 
 
-districts_a$id_a <- as.numeric(rownames(districts_a))
-districts_c$id_c <- as.numeric(rownames(districts_c))
+## how many cinstituency names match in the raw data ?
 
-district_fuzzy <- merge_plus(districts_a,districts_c,by="dist_ident",
-                             match_type = "fuzzy",
-                             fuzzy_settings=build_fuzzy_settings(method = "jw",maxDist = 0.5,matchNA = FALSE),
-                             unique_key_1 = "id_a",
-                             unique_key_2 = "id_c")
-
-                             
-dist_matches <- district_fuzzy$matches[order(pc01_state_name_1)]
-nomatch_a <- district_fuzzy$data1_nomatch[order(pc01_state_name)]
-nomatch_c <- district_fuzzy$data2_nomatch[order(pc01_state_name)]
-## constituency 
