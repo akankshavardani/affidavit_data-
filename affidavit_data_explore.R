@@ -236,12 +236,12 @@ write.csv(affidavit_match,paste0(outpath,"aff_match.csv"),row.names=F)
 fuzzy_stata <- read.csv(paste0(outpath,"fuzzy_aff-cand.csv"))
 
 ## making both party names upper case
-party_names <- c("party","normalized_party")
+party_names <- c("party","party_cand")
 setDT(fuzzy_stata)[,(party_names):=lapply(.SD,toupper),.SDcols=party_names]
 fuzzy_stata[,(party_names):=lapply(.SD,trimws),.SDcols=party_names]
 
 ## creating a variable that takes value 1 if party names perfectly match between the two datasets
-fuzzy_stata[party==normalized_party,party_match:=1]
+fuzzy_stata[party==party_cand,party_match:=1]
 
 fuzzy_stata %>% 
   count(party_match)
@@ -255,7 +255,7 @@ fuzzy_stata %>%
 
 # can_match >= 0.9     n
 # 1:            FALSE 18178
-# 2:             TRUE 95048
+# 2:             TRUE 95049
 # 3:               NA   877
 
 fuzzy_stata %>% 
