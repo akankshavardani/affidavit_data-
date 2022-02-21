@@ -197,8 +197,39 @@ x[no>2]
 
 ## I don't think an exact match on age is a good proxy - instead should match by year of election and constituency id
 
+## affidavit data
 affidavit_match <- unique(affidavit[,c("ac_id","cand_name","year","party")])
 x <- affidavit[, no:=.N, by=c("ac_id","cand_name","year","party")]
 x %>% count(no) # getting duplicates again but much lesser - why ?
-y <- x[no==2]
+y <- x[no==2] ## error in coding ? - will include a variable in original dataset to account for this and then create the unique dataset
+
+affidavit[, dup_aff:=.N, by=c("year","ac_id","cand_name","party")]
+affidavit_match <- unique(affidavit[,c("ac_id","cand_name","year","party","dup_aff")])
+
+## doing the same for candidate data
+candidates_match <- unique(candidates[,c("ac_id","cand_name","year","normalized_party")])
+x <- candidates[, no:=.N, by=c("ac_id","cand_name","year","normalized_party")]
+x %>% count(no) # getting duplicates again but much lesser - why ?
+y <- x[no>=2] ## error in coding ? - will include a variable in original dataset to account for this and then create the unique dataset
+rm(x,y)
+
+candidates[, dup_can:=.N, by=c("ac_id","cand_name","year","normalized_party")]
+candidates_match <- unique(candidates[,c("ac_id","cand_name","year","normalized_party","dup_can")])
+
+## making the eyar vaiable into character so that not a problem while matching (might need a character variable)
+candidates_match$year <- as.character(candidates_match$year)
+affidavit_match$year <- as.character(affidavit_match$year)
+
+## creating id variables for each data set
+candidates_match$id_c <- rownames(candidates_match)
+affidavit_match$id_a <- rownames(affidavit_match)
+
+## Exporting the two created datasets 
+write.csv(candidates_match,paste0(outpath,"cand_match.csv"),row.names=F)
+write.csv(affidavit_match,paste0(outpath,"aff_match.csv"),row.names=F)
+
+## Did fuzzy matching in Stata - getting many perfect matches - and for rest can use party names. Following steps to do:
+## For all the matches if the party names is same across the two files - if not see what are the kind of differences - in perfect matches
+## I would expect the difference to be due to difference in the way party name is mentioned in the two files.
+## 
 
