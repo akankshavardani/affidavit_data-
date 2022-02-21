@@ -207,14 +207,14 @@ affidavit[, dup_aff:=.N, by=c("year","ac_id","cand_name","party")]
 affidavit_match <- unique(affidavit[,c("ac_id","cand_name","year","party","dup_aff")])
 
 ## doing the same for candidate data
-candidates_match <- unique(candidates[,c("ac_id","cand_name","year","normalized_party")])
-x <- candidates[, no:=.N, by=c("ac_id","cand_name","year","normalized_party")]
+candidates_match <- unique(candidates[,c("ac_id","cand_name","year","party")])
+x <- candidates[, no:=.N, by=c("ac_id","cand_name","year","party")]
 x %>% count(no) # getting duplicates again but much lesser - why ?
 y <- x[no>=2] ## error in coding ? - will include a variable in original dataset to account for this and then create the unique dataset
 rm(x,y)
 
-candidates[, dup_can:=.N, by=c("ac_id","cand_name","year","normalized_party")]
-candidates_match <- unique(candidates[,c("ac_id","cand_name","year","normalized_party","dup_can")])
+candidates[, dup_can:=.N, by=c("ac_id","cand_name","year","party")]
+candidates_match <- unique(candidates[,c("ac_id","cand_name","year","party","dup_can")])
 
 ## making the eyar vaiable into character so that not a problem while matching (might need a character variable)
 candidates_match$year <- as.character(candidates_match$year)
