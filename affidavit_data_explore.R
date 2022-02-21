@@ -263,8 +263,8 @@ fuzzy_stata %>%
   count(party_match)
 
 # party_match     n
-# 1:           1 76670
-# 2:          NA 18378
+# 1:           1 77530
+# 2:          NA 17519
 
 fuzzy_party_mismatch <- fuzzy_stata[can_match >= 0.9 & is.na(party_match)]
 ## on comparing the party names with affidavit file and the excel file that links abbreviations with full names - it seems party is a better variable to use than "normalized_party"
