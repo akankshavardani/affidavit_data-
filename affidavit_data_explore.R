@@ -18,7 +18,7 @@ if (any(installed_packages == FALSE)) {
 # Packages loading
 invisible(lapply(packages, library, character.only = TRUE))
 
-
+rm(list=ls())
 ## Setting the data upload and save paths
 inpath_shrug <- "~/Dropbox/Datasets/SHRUG/"
 outpath <- "~/Desktop/Research/Projects/affidavit_data-/data_analysis/"
@@ -158,11 +158,16 @@ rm(dist_names_a,dist_names_c,dist_not_in_a,dist_not_in_c)
 ## Steps to undertake
 # 1. create two key datasets - one for affidavits data and the other for the candidates data. In each of these files will have observations that are unique by - state-district-constituency-candidate 
 # generate an id for each variable - will label of form state_name and state_id,  district_name_a, distict_name_c, ...
-# 2. Will export the two datasets to csv, load it in STATA. 
-# Will first fuzzy match over district names - for each dataset, only keep the unique district and state observations - to fuzzy match using affidavit data as the first dataset 
-# (as that is the one with a higher number of observations) - after the fuzzy match - link the above file with the candidate file - and now will use the district_name_a and 
-# so relabel district_name_a as district_name ...
-## will next fuzzy match over constituencies 
+# 2. Will export the two datasets to 
 
-## how many cinstituency names match in the raw data ?
+## how many constituency names match in the raw data ?
+con_names_c <- setDT(candidates %>% distinct_at(c("con_name")))
+con_names_c<-con_names_c[order(con_name)]
+
+con_names_a <- setDT(affidavit %>% distinct_at(c("con_name")))[order(con_name)]
+
+con_not_in_c <- data.table(con_names_c$con_name[which(!con_names_c$con_name%in%con_names_a$con_name)])
+con_not_in_a <- data.table(con_names_a$con_name[which(!con_names_a$con_name%in%con_names_c$con_name)])
+rm(con_names_a,con_names_c,con_not_in_a,con_not_in_c)
+
 
