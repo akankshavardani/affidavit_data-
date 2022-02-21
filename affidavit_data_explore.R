@@ -231,5 +231,42 @@ write.csv(affidavit_match,paste0(outpath,"aff_match.csv"),row.names=F)
 ## Did fuzzy matching in Stata - getting many perfect matches - and for rest can use party names. Following steps to do:
 ## For all the matches if the party names is same across the two files - if not see what are the kind of differences - in perfect matches
 ## I would expect the difference to be due to difference in the way party name is mentioned in the two files.
-## 
 
+## Loading in the fuzzy match file
+fuzzy_stata <- read.csv(paste0(outpath,"fuzzy_aff-cand.csv"))
+
+## making both party names upper case
+party_names <- c("party","normalized_party")
+setDT(fuzzy_stata)[,(party_names):=lapply(.SD,toupper),.SDcols=party_names]
+fuzzy_stata[,(party_names):=lapply(.SD,trimws),.SDcols=party_names]
+
+## creating a variable that takes value 1 if party names perfectly match between the two datasets
+fuzzy_stata[party==normalized_party,party_match:=1]
+
+fuzzy_stata %>% 
+  count(party_match)
+
+## rounding the match score variable to 3 decimal places
+
+fuzzy_stata[,can_match:=round(can_match,3)]
+
+fuzzy_stata %>% 
+  count(can_match >= 0.9) 
+
+# can_match >= 0.9     n
+# 1:            FALSE 18178
+# 2:             TRUE 95048
+# 3:               NA   877
+
+fuzzy_stata %>% 
+  filter(can_match >= 0.9) %>% 
+  count(party_match)
+
+# party_match     n
+# 1:           1 76670
+# 2:          NA 18378
+
+fuzzy_party_mismatch <- fuzzy_stata[can_match >= 0.9 & is.na(party_match)]
+## on comparing the party names with affidavit file and the excel file that links abbreviations with full names - it seems party is a better variable to use than "normalized_party"
+## eg UKKD vs UKD and LD vs LKD  
+## will do that change above and redo the matching !
