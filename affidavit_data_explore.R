@@ -52,6 +52,7 @@ candidates <- setDT(candidates)[year>=2004]
 aff_cand <- statar::join(affidavit,candidates,kind="full",on=c("sh_cand_id"), gen="aff_cand")
 
 aff_cand %>% count(aff_cand) ## only get 19,424 matches. 74,352 candidates from affidavit not matched - at least all these should be matches because even though 
+## The reason for them not getting matched is because for these other 74,352 candidates, SHRUG has not created ids
 ## not all candidates might be submitting an affidavit all those that do must be running for elections
 
 ## do the year variables match for those that matched between the two datasets ?
@@ -170,4 +171,34 @@ con_not_in_c <- data.table(con_names_c$con_name[which(!con_names_c$con_name%in%c
 con_not_in_a <- data.table(con_names_a$con_name[which(!con_names_a$con_name%in%con_names_c$con_name)])
 rm(con_names_a,con_names_c,con_not_in_a,con_not_in_c)
 
+affidavit_match <- unique(affidavit[,c("ac_id","cand_name","age","party")]) ## some observations from the main dataset dropped - why ?
+
+x <- affidavit[, no:=.N, by=c("ac_id","cand_name","age","party")]
+x %>% count(no)
+
+x[no==2] ## getting duplicates because the candidate with the same name appears in different years (fighting in multiple elections) but the age of the candidate is reported the same in both the years
+# should I also control for year then ? - age might not be a good indicator then if age doesn't change in one dataset acoss years but changes in the other
+# check in the candidates data:
+
+candidates_match <- unique(candidates[,c("ac_id","cand_name","age","party")]) ## some observations from the main dataset dropped - why ?
+## two party variables - party and normalised_party : What is the difference? Don't know exactly!
+
+## Again lose observations when create the dataset - why ?
+
+x <- candidates[, no:=.N, by=c("ac_id","cand_name","age","party","normalized_party")]
+x %>% count(no)
+
+x[no==2] ## duplicates by age
+
+## if remove age - still duplicates ?
+x <- candidates[, no:=.N, by=c("ac_id","cand_name","party","normalized_party")]
+x %>% count(no) ## yes 
+x[no>2] 
+
+## I don't think an exact match on age is a good proxy - instead should match by year of election and constituency id
+
+affidavit_match <- unique(affidavit[,c("ac_id","cand_name","year","party")])
+x <- affidavit[, no:=.N, by=c("ac_id","cand_name","year","party")]
+x %>% count(no) # getting duplicates again but much lesser - why ?
+y <- x[no==2]
 
